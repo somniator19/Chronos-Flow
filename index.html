@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="UTF-8" />
+        <title>Meeting Overlap Manager</title>
+        <link rel="stylesheet" href="./src/styles/index.css" />
+    </head>
+    <body>
+        <main id="app">
+            <header>
+                <button id="add-new-meeting-btn">New Meeting</button>
+                <div
+                    id="view-meeting-btn"
+                    data-id="82b49c37-0201-4b89-8ddd-1ffc4749a88f"
+                    style="display: inline; border: 1px solid green"
+                >
+                    View Meeting (test)
+                </div>
+            </header>
+            <article>
+                <div class="day">
+                    day 1
+                    <div id="meeting1">meeting 1</div>
+                    <div id="meeting2">meeting 2</div>
+                </div>
+                <div class="day">
+                    day 2
+                    <div id="meeting1">meeting 1</div>
+                    <div id="meeting2">meeting 2</div>
+                </div>
+                <div class="day">
+                    day 3
+                    <div id="meeting1">meeting 1</div>
+                    <div id="meeting2">meeting 2</div>
+                </div>
+            </article>
+            <aside id="sidebar">
+                <form id="create-meeting-form" hidden>
+                    <fieldset id="create-meeting-details">
+                        <legend>Meeting details</legend>
+                        <label for="create-meeting-topic">Topic</label>
+                        <input
+                            id="create-meeting-topic"
+                            name="topic"
+                            class="meeting-topic"
+                            type="text"
+                            required
+                        />
+                        <label for="create-meeting-description">Description</label>
+                        <textarea id="create-meeting-description" name="description"></textarea>
+                    </fieldset>
+                    <fieldset id="create-meeting-time-period">
+                        <legend>Time period</legend>
+                        <label for="create-meeting-date">Date</label>
+                        <input
+                            id="create-meeting-date"
+                            name="date"
+                            type="date"
+                            min="2025-12-27"
+                            max="2025-12-29"
+                            required
+                        />
+                        <label for="create-meeting-start-time">Start time</label>
+                        <input
+                            id="create-meeting-start-time"
+                            name="start-time"
+                            type="time"
+                            min="09:00"
+                            max="18:00"
+                            step="300"
+                            required
+                        />
+                        <label for="create-meeting-end-time">End time</label>
+                        <input
+                            id="create-meeting-end-time"
+                            name="end-time"
+                            type="time"
+                            min="09:00"
+                            max="18:00"
+                            step="300"
+                            required
+                        />
+                    </fieldset>
+                    <fieldset id="create-meeting-contacts">
+                        <legend>Contacts</legend>
+                        <label for="create-meeting-invited">Send invites</label>
+                        <select id="create-meeting-invited" name="invited" size="5" multiple>
+                            <option value="default" selected>----------------------</option>
+                        </select>
+                        <label for="create-meeting-accepted">Invites accepted</label>
+                        <select id="create-meeting-accepted" name="accepted" size="5" multiple>
+                            <option value="default" selected>----------------------</option>
+                        </select>
+                    </fieldset>
+                    <button id="create-meeting-save-btn" type="button">Save</button>
+                    <button id="create-meeting-cancel-btn" type="button">Cancel</button>
+                </form>
+                <form id="view-meeting-form" hidden>
+                    <fieldset id="view-meeting-details">
+                        <legend>Meeting details</legend>
+                        <label for="view-meeting-topic">Topic</label>
+                        <input
+                            id="view-meeting-topic"
+                            name="topic"
+                            class="meeting-topic"
+                            type="text"
+                            required
+                            readonly
+                        />
+                        <label for="view-meeting-description">Description</label>
+                        <textarea
+                            id="view-meeting-description"
+                            name="description"
+                            readonly
+                        ></textarea>
+                    </fieldset>
+                    <fieldset id="view-meeting-time-period">
+                        <legend>Time period</legend>
+                        <label for="view-meeting-date">Date</label>
+                        <input
+                            id="view-meeting-date"
+                            name="date"
+                            type="date"
+                            min="2025-12-27"
+                            max="2025-12-29"
+                            required
+                            readonly
+                        />
+                        <label for="view-meeting-start-time">Start time</label>
+                        <input
+                            id="view-meeting-start-time"
+                            name="start-time"
+                            type="time"
+                            min="09:00"
+                            max="18:00"
+                            step="300"
+                            required
+                            readonly
+                        />
+                        <label for="view-meeting-end-time">End time</label>
+                        <input
+                            id="view-meeting-end-time"
+                            name="end-time"
+                            type="time"
+                            min="09:00"
+                            max="18:00"
+                            step="300"
+                            required
+                            readonly
+                        />
+                    </fieldset>
+                    <fieldset id="view-meeting-contacts">
+                        <legend>Contacts</legend>
+                        <label for="view-meeting-invited">Send invites</label>
+                        <select id="view-meeting-invited" name="invited" size="5" multiple>
+                            <option value="default" selected>----------------------</option>
+                        </select>
+                        <label for="view-meeting-accepted">Invites accepted</label>
+                        <select id="view-meeting-accepted" name="accepted" size="5" multiple>
+                            <option value="default" selected>----------------------</option>
+                        </select>
+                    </fieldset>
+                    <button id="view-meeting-save-btn" type="button">Save</button>
+                    <button id="view-meeting-edit-btn" type="button">Edit</button>
+                    <button id="view-meeting-delete-btn" type="button">Delete</button>
+                    <button id="view-meeting-cancel-btn" type="button">Cancel</button>
+                </form>
+            </aside>
+            <footer>footer</footer>
+        </main>
+        <script type="module" src="/src/index.js"></script>
+    </body>
+</html>
