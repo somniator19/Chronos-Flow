@@ -1,4 +1,4 @@
-import { getMeetings } from './data.js'; // Adjust path if needed
+import { getMeetings } from './data.js';
 /**
  * Detects all pairwise intersections (overlaps) between meetings.
  * @param {Array} meetings - Array of meeting objects { id, start, end, ... }
