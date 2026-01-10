@@ -1,0 +1,41 @@
+{
+    "name": "meeting-manager",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "vitest",
+        "test:run": "vitest run",
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/TUMOlabs/meeting-manager.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/TUMOlabs/meeting-manager/issues"
+    },
+    "homepage": "https://github.com/TUMOlabs/meeting-manager#readme",
+    "devDependencies": {
+        "eslint": "^9.39.2",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.4",
+        "globals": "^16.5.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.2.7",
+        "prettier": "^3.7.4",
+        "vite": "^7.3.0",
+        "vitest": "^4.0.16"
+    },
+    "lint-staged": {
+        "**/*.{js,jsx,ts,tsx,html,css}": [
+            "npx prettier --write",
+            "npx eslint --fix"
+        ]
+    }
+}
