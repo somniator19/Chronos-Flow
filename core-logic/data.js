@@ -1,16 +1,16 @@
-// Example of a  meeting
+// Example of a meeting
 const sampleMeeting = {
-  id: crypto.randomUUID(),  // this generates unique ID
-  start: new Date('2026-01-10T09:00:00').getTime(),  // unix timestamp (ms)
+  id: crypto.randomUUID(),  // Generates unique ID
+  start: new Date('2026-01-10T09:00:00').getTime(),  // Unix timestamp (ms)
   end: new Date('2026-01-10T10:30:00').getTime(),
   title: 'Team Glitch',
-  location: 'Zoom',
-  notes: 'Discuss project progress, Q&A session, celebrate milestones, and working on new steps.'
+  location: 'Google Meet',
+  notes: 'Discuss project progress, Q&A session, celebrating milestones and planning next steps.'
 };
-// Array to hold all meetings (from LocalStorage later)
+// Array to hold all meetings (can be added from LocalStorage later)
 let meetings = [sampleMeeting];
 
-// Function to add a meeting (export for use in other files)
+// Function to add a meeting (can be used in other files)
 export function addMeeting(startDate, endDate, title = '', location = '', notes = '') {
   const id = crypto.randomUUID();
   const newMeeting = {
@@ -30,7 +30,7 @@ export function getMeetings() {
   return meetings;
 }
 
-// Functions for persistence to save meetings to&from LocalStorage 
+// This will be saved to LocalStorage for persistence later
 export function saveMeetings() {
   localStorage.setItem('meetings', JSON.stringify(meetings));
 }
@@ -38,3 +38,7 @@ export function loadMeetings() {
   const saved = localStorage.getItem('meetings');
   if (saved) meetings = JSON.parse(saved);
 }
+/*Example usage
+addMeeting('2026-01-10T10:00', '2026-01-10T11:00', 'Study Session');
+console.log(getMeetings());
+*/
