@@ -1,0 +1,29 @@
+
+.meeting-item {
+  padding: 6px;
+  border-bottom: 1px solid #ccc;
+}
+
+.meeting-item.conflict {
+  background: #ffd6d6;
+}
+
+.timeline {
+  position: relative;
+  height: 120px;
+  border: 1px solid #ccc;
+}
+
+.timeline-item {
+  position: absolute;
+  top: 20px;
+  height: 30px;
+  background: #8ecae6;
+  border-radius: 4px;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.timeline-item.conflict {
+  background: #ff7a7a;
+}
