@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { detectPairwiseIntersections } from '../core-logic/intersection.js';
+import { detectPairwiseIntersections } from '../intersection.js';
 
 describe('Pairwise Intersection Detection', () => {
   it('detects overlapping meetings correctly', () => {

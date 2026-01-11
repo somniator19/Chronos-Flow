@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { addMeeting, getMeetings } from '../core-logic/data.js';
+import { addMeeting, getMeetings } from '../data.js';
 
 describe('Meeting Data Structure', () => {
   it('adds meeting with correct timestamps', () => {
