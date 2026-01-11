@@ -1,52 +1,52 @@
-/**
- * Builds conflict clusters (connected components) from pairwise intersections.
- *
- * @param {Array} meetings - Array of meeting objects { id, ... }
- * @param {Array} conflicts - Array of conflicting pairs [['id1','id2'], ...]
- * @returns {Array} Array of clusters, each cluster is an array of meeting objects
- */
-export function buildConflictClusters(meetings, conflicts) {
-  // 1 Build adjacency list (graph)
-  const graph = new Map();
+//Builds conflict clusters (connected components) from pairwise intersections.
 
-  // Initialize graph nodes
-  for (const meeting of meetings) {
-    graph.set(meeting.id, new Set());
-  }
+function overlaps(a, b) {
+  return a.start < b.end && b.start < a.end;
+}
 
-  // Add edges
-  for (const [a, b] of conflicts) {
-    graph.get(a).add(b);
-    graph.get(b).add(a);
-  }
-
-  // 2. DFS to find connected components
-  const visited = new Set();
-  const clusters = [];
-
-  function dfs(meetingId, clusterIds) {
-    visited.add(meetingId);
-    clusterIds.push(meetingId);
-
-    for (const neighbor of graph.get(meetingId)) {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor, clusterIds);
+function inferConflicts(meetings) {
+  const conflicts = [];
+  for (let i = 0; i < meetings.length; i++) {
+    for (let j = i + 1; j < meetings.length; j++) {
+      const a = meetings[i];
+      const b = meetings[j];
+      if (overlaps(a, b)) {
+        conflicts.push([a.id, b.id]);
       }
     }
   }
+  return conflicts;
+}
 
-  // 3 Run DFS from each unvisited node
-  for (const meeting of meetings) {
-    if (!visited.has(meeting.id)) {
-      const clusterIds = [];
-      dfs(meeting.id, clusterIds);
+export function buildConflictClusters(meetings = [], conflicts = null) {
+  if (!meetings.length) return [];
 
-      // Convert IDs back to meeting objects
-      const clusterMeetings = clusterIds.map(id =>
-        meetings.find(m => m.id === id)
-      );
+  const edges = conflicts ?? inferConflicts(meetings);
 
-      clusters.push(clusterMeetings);
+  const adj = new Map();
+  meetings.forEach(m => adj.set(m.id, new Set()));
+
+  edges.forEach(([a, b]) => {
+    adj.get(a)?.add(b);
+    adj.get(b)?.add(a);
+  });
+
+  const visited = new Set();
+  const clusters = [];
+
+  function dfs(id, cluster) {
+    visited.add(id);
+    cluster.push(id);
+    for (const next of adj.get(id)) {
+      if (!visited.has(next)) dfs(next, cluster);
+    }
+  }
+
+  for (const m of meetings) {
+    if (!visited.has(m.id)) {
+      const ids = [];
+      dfs(m.id, ids);
+      clusters.push(ids.map(id => meetings.find(m => m.id === id)));
     }
   }
 
