@@ -3,9 +3,8 @@ import { describe, it, expect } from 'vitest';
 import { buildConflictClusters } from '../clustering.js';
 
 /**
- * Helper – builds a conflict matrix from an array of meetings.
- * If you want to test the overload that infers conflicts automatically,
- * just omit the second argument.
+ * Builds a conflict matrix from an array of meetings.
+ * Used to simulate inferred conflicts in tests.
  */
 function inferConflicts(meetings) {
   const conflicts = [];
@@ -43,7 +42,7 @@ describe('buildConflictClusters – exhaustive behaviour', () => {
       { id: 'm2', start: 1000, end: 1100 },
       { id: 'm3', start: 1130, end: 1230 },
     ];
-    const conflicts = [['m1', 'm2']]; // only m1 ↔ m2 conflict
+    const conflicts = [['m1', 'm2']]; // only m1 <-> m2 conflict
 
     const clusters = buildConflictClusters(meetings, conflicts);
     expect(clusters).toHaveLength(2);
@@ -52,7 +51,7 @@ describe('buildConflictClusters – exhaustive behaviour', () => {
     expect(sizes).toEqual([1, 2]); // one singleton, one pair
   });
 
-  /** 3. Transitive (indirect) overlap – A↔B, B↔C ⇒ A,B,C together */
+  /** 3. Transitive (indirect) overlap – A<->B, B<->C => A,B,C together */
   it('groups indirectly connected meetings into the same cluster', () => {
     const meetings = [
       { id: 'm1', start: 900, end: 1030 },

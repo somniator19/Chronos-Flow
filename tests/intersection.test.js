@@ -5,8 +5,8 @@ describe('Pairwise Intersection Detection', () => {
   it('detects overlapping meetings correctly', () => {
     const meetings = [
       { id: 'm1', start: 900, end: 1030 },   // 9:00 - 10:30
-      { id: 'm2', start: 1000, end: 1100 },  // 10:00 - 11:00 → overlaps
-      { id: 'm3', start: 1130, end: 1230 }   // 11:30 - 12:30 → no overlap
+      { id: 'm2', start: 1000, end: 1100 },  // 10:00 - 11:00 -> overlaps
+      { id: 'm3', start: 1130, end: 1230 }   // 11:30 - 12:30 -> no overlap
     ];
 
     const result = detectPairwiseIntersections(meetings);
