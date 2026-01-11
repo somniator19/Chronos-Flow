@@ -1,9 +1,12 @@
 /**
- * Renders meetings grouped by conflict clusters,
+ * Renders meetings grouped by conflict clusters.
  * @param {Array<Array<Object>>} clusters
  * @param {Object} uiOptions
  */
-export function renderMeetings(clusters = [], uiOptions = {}) {
+export function renderMeetings(clusters = {}, uiOptions = {}) {
+  const clusterList = Array.isArray(clusters)
+  ? clusters
+  : Object.values(clusters)
   const container = document.querySelector('#meetings-container');
   if (!container) return;
 
@@ -19,10 +22,10 @@ export function renderMeetings(clusters = [], uiOptions = {}) {
 
   /*───────────────────────────────────────
     Flatten clusters into renderable items
-  ──────────────────────────────────────*/
+  ───────────────────────────────────────*/
   let items = [];
 
-  clusters.forEach((cluster, clusterIndex) => {
+  clusterList.forEach((cluster, clusterIndex) => {
     if (!Array.isArray(cluster)) return;
 
     const isConflict = cluster.length > 1;
@@ -37,7 +40,7 @@ export function renderMeetings(clusters = [], uiOptions = {}) {
     });
   });
 
-  /*───────────
+  /*─────────────
      Sorting
   ─────────────*/
   if (sortMode === 'start') {
@@ -93,6 +96,7 @@ function renderRangeView(container, items) {
     const bar = document.createElement('div');
     bar.className = 'timeline-item';
 
+
     bar.classList.add(`cluster-${m.clusterIndex}`);
 
     if (m.isConflict) bar.classList.add('conflict');
@@ -111,7 +115,7 @@ function renderRangeView(container, items) {
   container.appendChild(timeline);
 }
 
-/* ─────────────
+/* ────────────
    Utilities
 ───────────── */
 function formatTime(ts) {
