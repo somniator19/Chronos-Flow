@@ -24,6 +24,15 @@
   overflow: hidden;
   white-space: nowrap;
 }
+
 .timeline-item.conflict {
   background: #ff7a7a;
+}
+
+.range-container {
+  position: relative;
+}
+
+.meeting {
+  position: absolute;
 }
