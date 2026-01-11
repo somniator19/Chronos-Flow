@@ -6,7 +6,7 @@ import {
   updateMeeting,
   deleteMeeting,
   getMeetingById
-} from './queries';
+} from './queries.js';
 
 /*^^^^^^^^^^^^^^^
    Modal helpers
