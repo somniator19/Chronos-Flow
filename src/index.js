@@ -1,4 +1,4 @@
-console.log('💫⌛💫 index.js loaded');
+console.log('💫⌛Time to plan⏳💫');
 // ~~~~~~~~~~~~~~~~~~~~~~~
 // UI utilities (UI-only)
 // ~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,8 +14,8 @@ from './utils/formUtils';
 // ~~~~~~~~~~~~~~~~~~~~~~
 // Core logic (pure)
 // ~~~~~~~~~~~~~~~~~~~~~~
-import { getMeetings } from '../core-logic/data.js';
-import { buildConflictClusters } from '../core-logic/clustering.js';
+import { getMeetings } from './core-logic/data.js';
+import { buildConflictClusters } from './core-logic/clustering.js';
 
 // ~~~~~~~~~~~~~~~~~~~~~
 // Rendering + UI state
