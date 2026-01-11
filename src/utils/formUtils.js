@@ -1,5 +1,5 @@
 /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   UI-only form handling helpers (open, close, save, edit, delete)
+  UI-only form handling helpers (open, close, save, edit, delete)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 import {
   createMeeting,
@@ -9,49 +9,52 @@ import {
 } from './queries.js';
 
 /*^^^^^^^^^^^^^^^
-   Modal helpers
+  Modal helpers
 ^^^^^^^^^^^^^^^*/
 
 const showModal = () => {
   const overlay = document.querySelector('#modal-overlay');
-  if (overlay) {
-    overlay.hidden = false;
-    document.body.style.overflow = 'hidden';
-  }
+  if (!overlay) return;
+  overlay.hidden = false;
+  document.body.style.overflow = 'hidden';
 };
 
 const hideModal = () => {
   const overlay = document.querySelector('#modal-overlay');
-  if (overlay) {
-    overlay.hidden = true;
-    document.body.style.overflow = '';
-  }
+  if (!overlay) return;
+  overlay.hidden = true;
+  document.body.style.overflow = '';
 };
 
 const updateModalVisibility = () => {
   const overlay = document.querySelector('#modal-overlay');
   if (!overlay) return;
 
-  const visibleForm = [...overlay.querySelectorAll('form')]
-    .some(f => !f.hidden);
+  const hasVisibleForm = [...overlay.querySelectorAll('form')]
+    .some(form => !form.hidden);
 
-  visibleForm ? showModal() : hideModal();
+  hasVisibleForm ? showModal() : hideModal();
 };
 
 /*^^^^^^^^^^^^^^^^
-   Form helpers
+  Form helpers
 ^^^^^^^^^^^^^^^^*/
 
 export const getFormData = (formId) => {
   const form = document.querySelector(formId);
+  if (!form) return {};
   return Object.fromEntries(new FormData(form).entries());
 };
 
 const extractDateTime = (data) => {
-  const date = new Date(data.date).getTime();
+    
   const startTime = new Date(`${data.date}T${data['start-time']}`).getTime();
   const endTime = new Date(`${data.date}T${data['end-time']}`).getTime();
-  return { date, startTime, endTime };
+
+  return {
+    startTime: Number(startTime),
+    endTime: Number(endTime)
+  };
 };
 
 const populateForm = (formId, meetingId) => {
@@ -59,24 +62,28 @@ const populateForm = (formId, meetingId) => {
   const meeting = getMeetingById(meetingId);
   if (!form || !meeting) return;
 
-  form.querySelector('#view-meeting-topic').value = meeting.topic;
-  form.querySelector('#view-meeting-description').value = meeting.description;
+  form.querySelector('#view-meeting-topic').value = meeting.topic ?? '';
+  form.querySelector('#view-meeting-description').value = meeting.description ?? '';
 };
 
 /*^^^^^^^^^^^^^
-   Public API
+  Public API
 ^^^^^^^^^^^^^*/
 
 export const openForm = (formId, isNew, meetingId = '') => {
   const overlay = document.querySelector('#modal-overlay');
-  overlay?.querySelectorAll('form').forEach(f => f.hidden = true);
+  overlay?.querySelectorAll('form').forEach(f => (f.hidden = true));
 
   const form = document.querySelector(formId);
   if (!form) return;
 
   form.hidden = false;
-  if (!isNew) populateForm(formId, meetingId);
+
   form.dataset.currentMeetingId = meetingId;
+
+  if (!isNew && meetingId) {
+    populateForm(formId, meetingId);
+  }
 
   updateModalVisibility();
 };
@@ -93,12 +100,16 @@ export const closeForm = (formId) => {
 export const saveFormData = (formId, isNew, meetingId) => {
   const raw = getFormData(formId);
   const times = extractDateTime(raw);
-  const data = { ...raw, ...times };
+
+  const meetingData = {
+    ...raw,
+    ...times
+  };
 
   if (isNew) {
-    createMeeting(data);
+    createMeeting(meetingData);
   } else {
-    updateMeeting(meetingId, data);
+    updateMeeting(meetingId, meetingData);
   }
 
   closeForm(formId);
