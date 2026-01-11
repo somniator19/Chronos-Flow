@@ -7,29 +7,33 @@ import {
   saveFormData,
   editFormData,
   deleteFormData
-} from './utils/formUtils';
-
-import { loadUIOptions, updateUIOption } from './utils/queries';
+} 
+from './utils/formUtils';
 
 // ~~~~~~~~~~~~~~~~~~~~~~
-// Core logic (explicit)
+// Core logic (pure)
 // ~~~~~~~~~~~~~~~~~~~~~~
 import { getMeetings } from '../core-logic/data.js';
 import { buildConflictClusters } from '../core-logic/clustering.js';
 
 // ~~~~~~~~~~~~~~~~~~~~~
-// Rendering (UI-only)
+// Rendering + UI state
 // ~~~~~~~~~~~~~~~~~~~~~
+import { loadUIOptions, saveUIOptions } from './utils/uiOptions.js';
 import { renderMeetings } from './utils/renderMeetings.js';
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Persistent UI state (single)
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+let uiOptions = loadUIOptions();
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Central render pipeline
-// Gathers data, computes clusters, fetches UI options, and renders
+// Fetch data → cluster → render using current UI state
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const render = () => {
   const meetings = getMeetings();
   const clusters = buildConflictClusters(meetings);
-  const uiOptions = loadUIOptions();
 
   renderMeetings({
     meetings,
@@ -78,7 +82,7 @@ const main = () => {
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Existing meeting handlers
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~
   saveMeeting?.addEventListener('click', () => {
     const form = document.querySelector('#view-meeting-form');
     const meetingId = form?.dataset.currentMeetingId || '';
@@ -102,7 +106,7 @@ const main = () => {
   );
 
   // ~~~~~~~~~~~~~~~~~~~~~
-  // Modal close handlers
+  // Modal close helpers
   // ~~~~~~~~~~~~~~~~~~~~~
   const closeActiveModal = () => {
     const createForm = document.querySelector('#create-meeting-form');
@@ -118,41 +122,35 @@ const main = () => {
   modalCloseBtn?.addEventListener('click', closeActiveModal);
 
   modalOverlay?.addEventListener('click', (e) => {
-    if (e.target === modalOverlay) {
-      closeActiveModal();
-    }
+    if (e.target === modalOverlay) closeActiveModal();
   });
 
   // ~~~~~~~~~~~~~~~~~~~
   // UI option handlers
   // ~~~~~~~~~~~~~~~~~~~
   if (viewModeSelect) {
-    const options = loadUIOptions();
-    viewModeSelect.value = options.viewMode;
+    viewModeSelect.value = uiOptions.viewMode;
     viewModeSelect.addEventListener('change', (e) => {
-      updateUIOption('viewMode', e.target.value);
+      uiOptions.viewMode = e.target.value;
+      saveUIOptions(uiOptions);
       render();
     });
   }
 
   if (sortModeSelect) {
-    const options = loadUIOptions();
-    sortModeSelect.value = options.sortMode;
+    sortModeSelect.value = uiOptions.sortMode;
     sortModeSelect.addEventListener('change', (e) => {
-      updateUIOption('sortMode', e.target.value);
+      uiOptions.sortMode = e.target.value;
+      saveUIOptions(uiOptions);
       render();
     });
   }
 
   if (conflictsOnlyFilter) {
-    const options = loadUIOptions();
-    const filters = options.filters || {};
-    conflictsOnlyFilter.checked = filters.showConflictsOnly === true;
-
+    conflictsOnlyFilter.checked = uiOptions.filters.showConflictsOnly === true;
     conflictsOnlyFilter.addEventListener('change', (e) => {
-      updateUIOption('filters', {
-        showConflictsOnly: Boolean(e.target.checked)
-      });
+      uiOptions.filters.showConflictsOnly = Boolean(e.target.checked);
+      saveUIOptions(uiOptions);
       render();
     });
   }
@@ -172,9 +170,7 @@ const main = () => {
       input.addEventListener('click', () => {
         input.focus();
         if (typeof input.showPicker === 'function') {
-          try {
-            input.showPicker();
-          } catch {}
+          try { input.showPicker(); } catch {}
         }
       });
     });
@@ -194,9 +190,11 @@ const main = () => {
       attributeFilter: ['hidden']
     });
   }
+
   // ~~~~~~~~~~~~~~~
   // Initial render
   // ~~~~~~~~~~~~~~~
   render();
 };
+
 main();
