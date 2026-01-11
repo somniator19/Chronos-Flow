@@ -1,3 +1,4 @@
+console.log('💫⌛💫 index.js loaded');
 // ~~~~~~~~~~~~~~~~~~~~~~~
 // UI utilities (UI-only)
 // ~~~~~~~~~~~~~~~~~~~~~~~
