@@ -18,11 +18,15 @@ export function renderMeetings(clusters = [], uiOptions = {}) {
 let items = [];
 
 Object.entries(clusters).forEach(([label, meetings], clusterIndex) => {
-  const isConflict = meetings.length > 1;
+  const list = Array.isArray(meetings)
+    ? meetings
+    : Object.values(meetings);
+
+  const isConflict = list.length > 1;
 
   if (showConflictsOnly && !isConflict) return;
 
-  meetings.forEach(meeting => {
+  list.forEach(meeting => {
     items.push({
       ...meeting,
       isConflict,
