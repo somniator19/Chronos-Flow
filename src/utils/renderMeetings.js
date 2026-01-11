@@ -15,22 +15,22 @@ export function renderMeetings(clusters = [], uiOptions = {}) {
   /*─────────────────────────────────────── 
   Flatten clusters into renderable items 
   ───────────────────────────────────────*/
-  let items = [];
+let items = [];
 
-  clusters.forEach((cluster, clusterIndex) => {
-    const isConflict = cluster.length > 1;
+Object.entries(clusters).forEach(([label, meetings], clusterIndex) => {
+  const isConflict = meetings.length > 1;
 
-    cluster.forEach(meeting => {
-      if (showConflictsOnly && !isConflict) return;
+  if (showConflictsOnly && !isConflict) return;
 
-      items.push({
-        ...meeting,
-        isConflict,
-        clusterIndex
-      });
+  meetings.forEach(meeting => {
+    items.push({
+      ...meeting,
+      isConflict,
+      clusterIndex,
+      clusterLabel: label
     });
   });
-
+});
   /*───────────── 
    Sorting 
   ─────────────*/
