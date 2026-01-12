@@ -3,6 +3,7 @@
  * @param {Array<Array<Object>>} clusters
  * @param {Object} uiOptions
  */
+
 function normalizeMeeting(raw) {
   if (!raw) return null;
 
@@ -93,7 +94,9 @@ function renderListView(container, items) {
     const start = formatTime(m.start);
     const end = formatTime(m.end);
 
-    el.textContent = `${m.id} | ${formatTime(m.start)} – ${formatTime(m.end)}`;
+    const title = m.topic || 'Untitled Meeting';
+
+    el.textContent = `${title} | ${formatTime(m.start)} – ${formatTime(m.end)}`;
     container.appendChild(el);
   });
 }
@@ -114,11 +117,16 @@ function renderRangeView(container, items) {
   items.forEach(m => {
     const bar = document.createElement('div');
     bar.className = 'timeline-item';
-
-
+    
     bar.classList.add(`cluster-${m.clusterIndex}`);
 
     if (m.isConflict) bar.classList.add('conflict');
+
+    const title = m.topic || 'Untitled Meeting';
+    
+    bar.title = `${title}\n${formatTime(m.start)} – ${formatTime(m.end)}`;
+    
+    bar.dataset.id = m.id;
 
     const left = ((m.start - min) / span) * 100;
     const width = ((m.end - m.start) / span) * 100;
@@ -138,6 +146,8 @@ function renderRangeView(container, items) {
    Utilities
 ───────────── */
 function formatTime(ts) {
+  if (!ts || Number.isNaN(ts)) return '—';
+
   return new Date(ts).toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit'
