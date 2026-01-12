@@ -1,13 +1,14 @@
+//───────────────────────────────────────
 /**
  * Renders meetings grouped by conflict clusters
- * @param {Array<Array<Object>>} clusters
+ * @param {Array<Array<Object>>|Object} clusters
  * @param {Object} uiOptions
  */
 
 function normalizeMeeting(raw) {
   if (!raw) return null;
 
-  const id = raw.id ?? raw.topic ?? raw.title ?? 'Untitled';
+  const id = raw.id ?? raw.topic ?? raw.title ?? 'Untitled Meeting';
 
   const start = new Date(raw.start).getTime();
   const end = new Date(raw.end).getTime();
@@ -18,11 +19,13 @@ function normalizeMeeting(raw) {
   }
 
   return { id, start, end };
-};
+}
+
 export function renderMeetings(clusters = {}, uiOptions = {}) {
   const clusterList = Array.isArray(clusters)
-  ? clusters
-  : Object.values(clusters)
+    ? clusters
+    : Object.values(clusters);
+
   const container = document.querySelector('#meetings-container');
   if (!container) return;
 
@@ -36,12 +39,12 @@ export function renderMeetings(clusters = {}, uiOptions = {}) {
 
   const showConflictsOnly = filters.showConflictsOnly === true;
 
-  /*───────────────────────────────────────
-    Flatten clusters into renderable items
-  ───────────────────────────────────────*/
+  /* ───────────────────────────────────
+  Flatten clusters into renderable items 
+  ─────────────────────────────────────*/
   let items = [];
 
-  Object.entries(clusters).forEach(([label, cluster], clusterIndex) => {
+  clusterList.forEach((cluster, clusterIndex) => {
     if (!Array.isArray(cluster)) return;
 
     const isConflict = cluster.length > 1;
@@ -54,56 +57,50 @@ export function renderMeetings(clusters = {}, uiOptions = {}) {
       items.push({
         ...meeting,
         isConflict,
-        clusterIndex,
-        clusterLabel: label
+        clusterIndex
       });
     });
   });
 
-  /*─────────────
-     Sorting
-  ─────────────*/
+  /* Sorting */
   if (sortMode === 'start') {
     items.sort((a, b) => a.start - b.start);
   } else if (sortMode === 'end') {
     items.sort((a, b) => a.end - b.end);
   }
 
-  /*─────────────
-     Render mode
-  ─────────────*/
+  /*────── 
+  Render 
+  ───────*/
   if (viewMode === 'range') {
     renderRangeView(container, items);
   } else {
     renderListView(container, items);
   }
-};
+}
 
-/* ─────────────
-   List view
-───────────── */
+/*─────── 
+List view 
+───────*/
 function renderListView(container, items) {
   items.forEach(m => {
     const el = document.createElement('div');
     el.className = 'meeting-item';
-
+    
     el.classList.add(`cluster-${m.clusterIndex}`);
 
     if (m.isConflict) el.classList.add('conflict');
 
-    const start = formatTime(m.start);
-    const end = formatTime(m.end);
+    el.dataset.id = m.id;
 
-    const title = m.topic || 'Untitled Meeting';
-
-    el.textContent = `${title} | ${formatTime(m.start)} – ${formatTime(m.end)}`;
+    el.textContent = `${m.id} | ${formatTime(m.start)} – ${formatTime(m.end)}`;
     container.appendChild(el);
   });
 }
 
-/* ─────────────
-   Range view
-───────────── */
+/*───────── 
+Range view 
+──────────*/
 function renderRangeView(container, items) {
   if (!items.length) return;
 
@@ -122,11 +119,8 @@ function renderRangeView(container, items) {
 
     if (m.isConflict) bar.classList.add('conflict');
 
-    const title = m.topic || 'Untitled Meeting';
-    
-    bar.title = `${title}\n${formatTime(m.start)} – ${formatTime(m.end)}`;
-    
     bar.dataset.id = m.id;
+    bar.title = `${m.id}\n${formatTime(m.start)} – ${formatTime(m.end)}`;
 
     const left = ((m.start - min) / span) * 100;
     const width = ((m.end - m.start) / span) * 100;
@@ -134,17 +128,16 @@ function renderRangeView(container, items) {
     bar.style.left = `${left}%`;
     bar.style.width = `${width}%`;
 
-    bar.textContent = m.title;
-
+    bar.textContent = m.id;
     timeline.appendChild(bar);
   });
 
   container.appendChild(timeline);
 }
 
-/* ────────────
-   Utilities
-───────────── */
+/*───────── 
+Utilities 
+─────────*/
 function formatTime(ts) {
   if (!ts || Number.isNaN(ts)) return '—';
 
@@ -153,3 +146,4 @@ function formatTime(ts) {
     minute: '2-digit'
   });
 }
+//───────────────────────────────────────
