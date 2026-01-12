@@ -1,8 +1,23 @@
 /**
- * Renders meetings grouped by conflict clusters.
+ * Renders meetings grouped by conflict clusters
  * @param {Array<Array<Object>>} clusters
  * @param {Object} uiOptions
  */
+function normalizeMeeting(raw) {
+  if (!raw) return null;
+
+  const id = raw.id ?? raw.topic ?? raw.title ?? 'Untitled';
+
+  const start = new Date(raw.start).getTime();
+  const end = new Date(raw.end).getTime();
+
+  if (Number.isNaN(start) || Number.isNaN(end)) {
+    console.warn('Invalid meeting skipped:', raw);
+    return null;
+  }
+
+  return { id, start, end };
+};
 export function renderMeetings(clusters = {}, uiOptions = {}) {
   const clusterList = Array.isArray(clusters)
   ? clusters
@@ -25,17 +40,21 @@ export function renderMeetings(clusters = {}, uiOptions = {}) {
   ───────────────────────────────────────*/
   let items = [];
 
-  clusterList.forEach((cluster, clusterIndex) => {
+  Object.entries(clusters).forEach(([label, cluster], clusterIndex) => {
     if (!Array.isArray(cluster)) return;
 
     const isConflict = cluster.length > 1;
     if (showConflictsOnly && !isConflict) return;
 
-    cluster.forEach(meeting => {
+    cluster.forEach(raw => {
+      const meeting = normalizeMeeting(raw);
+      if (!meeting) return;
+
       items.push({
         ...meeting,
         isConflict,
-        clusterIndex
+        clusterIndex,
+        clusterLabel: label
       });
     });
   });
@@ -57,7 +76,7 @@ export function renderMeetings(clusters = {}, uiOptions = {}) {
   } else {
     renderListView(container, items);
   }
-}
+};
 
 /* ─────────────
    List view
@@ -74,7 +93,7 @@ function renderListView(container, items) {
     const start = formatTime(m.start);
     const end = formatTime(m.end);
 
-    el.textContent = `${m.title} | ${start} – ${end}`;
+    el.textContent = `${m.id} | ${formatTime(m.start)} – ${formatTime(m.end)}`;
     container.appendChild(el);
   });
 }
