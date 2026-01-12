@@ -54,5 +54,5 @@ The goal of the project is to explore **time interval overlap**, **pairwise inte
 
 ---
 
-Built with caffeine, patience, and respect for time itself ⏳🌲
+Built with logic, patience, and respect for time itself ⏳
 
