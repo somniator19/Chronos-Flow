@@ -6,32 +6,25 @@
  */
 
 function normalizeMeeting(raw) {
-  if (!raw) return null;
-
-  if (Array.isArray(raw)) {
-    raw = raw[0];
-  }
-
   if (!raw || typeof raw !== 'object') return null;
-  
-  const id = raw.id ?? raw.topic ?? raw.title ?? 'Untitled Meeting';
 
-  const start =
-    typeof raw.start === 'number'
-      ? raw.start
-      : new Date(raw.start).getTime();
+  const id = raw.id ?? crypto.randomUUID();
 
-  const end =
-    typeof raw.end === 'number'
-      ? raw.end
-      : new Date(raw.end).getTime();
+  const start = new Date(raw.start).getTime();
+  const end = new Date(raw.end).getTime();
 
-  if (Number.isNaN(start) || Number.isNaN(end)) {
-    console.warn('Invalid Meeting Skipped:', raw);
+  if (!Number.isFinite(start) || !Number.isFinite(end)) {
+    console.warn('Invalid meeting skipped:', raw);
     return null;
   }
 
-  return { id, start, end };
+  return {
+    id,
+    start,
+    end,
+    title: raw.title ?? raw.topic ?? 'Untitled Meeting',
+    location: raw.location ?? ''
+  };
 }
 
 export function renderMeetings(clusters = {}, uiOptions = {}) {
@@ -75,7 +68,9 @@ export function renderMeetings(clusters = {}, uiOptions = {}) {
     });
   });
 
-  /* Sorting */
+  /*──────
+  Sorting 
+  ───────*/
   if (sortMode === 'start') {
     items.sort((a, b) => a.start - b.start);
   } else if (sortMode === 'end') {
@@ -106,7 +101,7 @@ function renderListView(container, items) {
 
     el.dataset.id = m.id;
 
-    el.textContent = `${m.id} | ${formatTime(m.start)} – ${formatTime(m.end)}`;
+    el.textContent = `${m.title} | ${formatTime(m.start)} – ${formatTime(m.end)}`;
     container.appendChild(el);
   });
 }
