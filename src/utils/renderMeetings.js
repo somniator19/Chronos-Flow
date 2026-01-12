@@ -8,13 +8,26 @@
 function normalizeMeeting(raw) {
   if (!raw) return null;
 
+  if (Array.isArray(raw)) {
+    raw = raw[0];
+  }
+
+  if (!raw || typeof raw !== 'object') return null;
+  
   const id = raw.id ?? raw.topic ?? raw.title ?? 'Untitled Meeting';
 
-  const start = new Date(raw.start).getTime();
-  const end = new Date(raw.end).getTime();
+  const start =
+    typeof raw.start === 'number'
+      ? raw.start
+      : new Date(raw.start).getTime();
+
+  const end =
+    typeof raw.end === 'number'
+      ? raw.end
+      : new Date(raw.end).getTime();
 
   if (Number.isNaN(start) || Number.isNaN(end)) {
-    console.warn('Invalid meeting skipped:', raw);
+    console.warn('Invalid Meeting Skipped:', raw);
     return null;
   }
 
